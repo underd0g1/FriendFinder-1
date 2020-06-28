@@ -4,6 +4,11 @@
 // ==============================================================================
 
 var express = require("express");
+var path = require('path');
+
+
+var bodyparser = require('body-parser');
+
 
 // ==============================================================================
 // EXPRESS CONFIGURATION
@@ -20,11 +25,36 @@ var PORT = process.env.PORT || 8080;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(bodyparser.urlencoded({
+   extended: true 
+  }))
 // ================================================================================
 // ROUTER
 // The below points our server to a series of "route" files.
 // These routes give our server a "map" of how to respond when users visit or request data from various URLs.
 // ================================================================================
+app.get('/', function(request, response){
+  console.log('user wants to see the index page ... so a request was made');
+  response.sendFile(__dirname + '/public/home.html');
+});
+
+app.get('/survey', function(request, response){
+  console.log('user wants to see the survey page ... so a request was made on /survey.');
+  response.sendFile(__dirname + '/public/testsurvey.html');
+});
+
+app.post('/surveyresponse', function(req,res){
+  console.log('user hit the submit button on the survey. we will now send them the json data.');
+  console.log("this is what you entered for the title: " + req.body.title);
+  console.log("this is what you entered for your name: " + req.body.yourName);
+  var name = req.body.yourName;
+  var title = req.body.title;
+  
+
+
+
+})
+
 
 require("./routes/apiRoutes")(app);
 // require("./routes/htmlRoutes")(app);
