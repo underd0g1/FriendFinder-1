@@ -74,7 +74,7 @@ app.post('/surveyresponse', function(req,res){
 
 console.log(formObject);
 
-
+// we are going to use this section on another route to show the world our json response.
 
 var textdb = fs.readFileSync('db.json', 'utf8');
 console.log('read thefile');
@@ -83,8 +83,7 @@ console.log(textdb);
 
 //send the db.txt file to the api page (route) to show file contents to the world.
 var freshjson = JSON.parse(textdb);
-var testarr = [];
-console.log(typeof testarr);
+
 console.log('parsed the file into json' + typeof freshjson)
 
  freshjson.push(formObject);
@@ -101,15 +100,27 @@ fs.writeFile('db.json', restring, function(err){
  console.log('appended array to json file');
 
 
+ //we are now going to use the data that we got and compare it to each other (the main point of this app)
 
- res.send(freshjson);
+ // function compare(recently_submitted_data, rest_of_our_json){
+ //   for(var i = 0; i < formObject.questions.length; i++){
+ //
+ //   }
+ // }
 
 
 
+});
 
+//adding our api route to display the raw list of friends
+app.get('/api', function(request, response){
 
+  console.log('api route was hit');
 
+  var textdb = fs.readFileSync('db.json', 'utf8');
 
+  var freshjson = JSON.parse(textdb);
+  response.send(freshjson);
 
 });
 
