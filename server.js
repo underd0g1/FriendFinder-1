@@ -5,6 +5,8 @@
 
 var express = require("express");
 var path = require('path');
+var fs = require('fs');
+
 
 
 var bodyparser = require('body-parser');
@@ -49,38 +51,70 @@ app.get('/survey', function(request, response){
 
 app.post('/surveyresponse', function(req,res){
   console.log('user hit the submit button on the survey. we will now send them the json data.');
-  console.log("this is what you entered for the title: " + req.body.title);
-  console.log("this is what you entered for your name: " + req.body.yourName);
-  var name = req.body.yourName;
-  var title = req.body.title;
 
-  //constuct the objects
-  function Construction(name, q1,q2,q3,q4,q5,q6,q7,q8,q9,q10){
-    this.name = name;
-    this.questions = function(){
-      
-    }
-    // this.q1 = q1;
-    // this.q2 = q2;
-    // this.q3 = q3;
-    // this.q4 = q4;
-    // this.q5 = q5;
-    // this.q6 = q6;
-    // this.q7 = q7;
-    // this.q8 = q8;
-    // this.q9 = q9;
-    // this.q10 = q10;
+// declare the body parser stuff as easy to remember variable  names
+  var fullname = req.body.yourName;
 
-  }
+  var q1 = req.body.question1;
+  var q2 = req.body.question2;
+  var q3 = req.body.question3;
+  var q4 = req.body.question4;
+  var q5 = req.body.question5;
+  var q6 = req.body.question6;
+  var q7 = req.body.question7;
+  var q8 = req.body.question8;
+  var q9 = req.body.question9;
+  var q10 = req.body.question10;
 
+  // construct our json object  structure
+ var formObject = {
+   name: fullname,
+  questions: [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10]
+};
+
+console.log(formObject);
 
 
 
+var textdb = fs.readFileSync('db.json', 'utf8');
+console.log('read thefile');
+console.log(textdb);
+// var db = require(__dirname + '/db.json');
 
-})
+//send the db.txt file to the api page (route) to show file contents to the world.
+var freshjson = JSON.parse(textdb);
+var testarr = [];
+console.log(typeof testarr);
+console.log('parsed the file into json' + typeof freshjson)
+
+ freshjson.push(formObject);
+console.log('pushed to the new array');
+console.log(freshjson);
+//using the fs module to save the object we made above into a txt file which will act as a makeshift database.
+
+var restring = JSON.stringify(freshjson);
+//
+fs.writeFile('db.json', restring, function(err){
+  if(err) throw err;
+   console.log('restring was saved to db.json.');
+ });
+ console.log('appended array to json file');
 
 
-require("./routes/apiRoutes")(app);
+
+ res.send(freshjson);
+
+
+
+
+
+
+
+
+});
+
+
+//require("./routes/apiRoutes")(app);
 // require("./routes/htmlRoutes")(app);
 
 // =============================================================================
